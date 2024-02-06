@@ -5,6 +5,7 @@ const getuserbyid = async (req, res) => {
     // getting id from params
     const { id } = req.params;
     try {
+        // get user using id and sending resposponse wothout password
         const user = await User.findById(id, '-password').populate("followers").populate("following");
         if (!user) {
             return res.status(404).send({ message: "user not found" });
