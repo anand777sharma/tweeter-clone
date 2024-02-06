@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Schema.Types;
-
+// tweet model
 const TweetSchema = new mongoose.Schema({
     content: {
         type: String,
