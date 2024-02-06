@@ -96,6 +96,7 @@ const unfollowuser = async (req, res) => {
 }
 const getusertweets = async (req, res) => {
     try {
+          // getting id from params
         const { id } = req.params;
         const tweets = await Tweet.find({ tweetedby: id }).sort({ createdAt: -1 }).populate("tweetedby");
         res.status(200).send(tweets);
@@ -106,6 +107,7 @@ const getusertweets = async (req, res) => {
 }
 const getuserretweets = async (req, res) => {
     try {
+          // getting id from params
         const { id } = req.params;
         const retweets = await Tweet.find({ retweetedby: id }).sort({ createdAt: -1 });
         res.status(200).send(retweets);
@@ -115,6 +117,7 @@ const getuserretweets = async (req, res) => {
     }
 }
 const uploadprofilepic = async (req, res) => {
+      // getting id from params
     const { id } = req.params;
     try {
         const { profileImg } = req.body;
