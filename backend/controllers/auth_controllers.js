@@ -7,8 +7,7 @@ dotenv.config()
 
 const register = async (req, res) => {
     try {
-        // console.log(req.body);
-        //get Data from the Requet Body
+             //get Data from the Requet Body
         const { name, username, email, password } = req.body;
         if (!name || !username || !email || !password) {
             return res.status(400).json({
@@ -22,18 +21,25 @@ const register = async (req, res) => {
                 message: "User with provided email is already registered"
             })
         }
+        // check username field must be unique
         user = await User.findOne({ username });
         if (user) {
             return res.status(400).json({
                 message: "User with provided username is already registered"
             })
         }
+        // hashing password
         const hashPassword = await bcrypt.hash(password, 10);
+        // getting new user iin newUser
         const newUser = new User({ name, email, username, password: hashPassword });
+        // saving new User
         const resp = await newUser.save();
+        // sending new response
         res.status(201).json({ message: "User Registered successfully", resp })
     } catch (error) {
+        // logging out error
         console.log(error)
+        // sending error status
         res.status(500).json({ message: "An error eccured while regsitration", error })
     }
 }

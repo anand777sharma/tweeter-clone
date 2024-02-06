@@ -11,7 +11,8 @@ import { useAuth } from '../context/auth';
 
 const TweetDetail = () => {
   const [tweet, setTweet] = useState();
-  const [tweetr, setTweetr] = useState({ content: '' });
+  const [tweetr, setTweetr] = useState({ content: '', picture: '' });
+  const [image, setImage] = useState({ preview: '', data: '' })
   const [auth, setAuth] = useAuth();
   const { id } = useParams();
   const [info, setInfo] = useState(null)
@@ -25,11 +26,28 @@ const TweetDetail = () => {
 
     })
   }
+  let url = '';
   const fileInputRef = useRef(null);
 
-  const handleButtonClick = () => {
+  const handleFileButtonClick = () => {
     fileInputRef.current.click();
   };
+  const handleFileSelect = (e) => {
+    const img = {
+      preview: URL.createObjectURL(e.target.files[0]),
+      data: e.target.files[0]
+    }
+    setImage(img);
+
+  };
+  const handleImgUpload = async () => {
+    let formData = new FormData();
+    formData.append('file', image.data);
+
+    const response = await axios.post(`http://localhost:5000/api/file/uploadFile`, formData)
+    return response;
+  }
+
 
   const viewprofile = (id) => {
     navigate('/profile/' + id);
@@ -37,7 +55,7 @@ const TweetDetail = () => {
   const viewtweet = (id) => {
     fetchData();
     navigate('/detail/' + id);
-    
+
   }
   const followuser = async (id) => {
     try {
@@ -130,7 +148,7 @@ const TweetDetail = () => {
         toast.success(data.message)
         fetchData();
 
-       
+
       }
     } catch (error) {
       toast.error(error)
@@ -172,13 +190,21 @@ const TweetDetail = () => {
   const submitHandler = async (e) => {
     e.preventDefault();
     try {
-      const resp = await axios.post(`http://localhost:5000/api/tweet/${info?._id}/reply`, tweetr, {
+     if (image.data !== '') {
+        const imgRes = await handleImgUpload();
+        url = "http://localhost:5000/api/file/files/" + imgRes.data.fileName
+
+
+      }
+      const data = { content: tweet.content, picture: url }
+      console.log(data);
+      const resp = await axios.post(`http://localhost:5000/api/tweet/${info?._id}/reply`, data, {
         headers: { Authorization: `Bearer ${auth?.token}` }
-      });
+      })
       console.log(resp);
       if (resp.status === 201) {
         toast.success(resp.data.message);
-        setTweetr({ content: '' });
+        setTweetr({  content: '', picture: '' });
         fetchData();
       }
     } catch (error) {
@@ -211,7 +237,7 @@ const TweetDetail = () => {
           post
         </button>
       </div>
-      <div className='card rounded-0'> 
+      <div className='card rounded-0'>
         <div className="card-body  ps-3 pe-2 py-2 d-flex">
           <Profile source={tweet?.tweetedby?.profileImg} size="40px" alt="pic" />
           <div className='ps-2 w-100 '>
@@ -267,16 +293,16 @@ const TweetDetail = () => {
 
               </p>
               {tweet?.picture === '' ?
-                  ('') :
+                ('') :
 
-                  (
-                    <>
-                      <div>
-                        <img src={tweet?.picture}
-                          className=" rounded-4 border border-2" alt="pic" style={{ maxHeight: 400 }} />
-                      </div>
-                    </>
-                  )}
+                (
+                  <>
+                    <div>
+                      <img src={tweet?.picture}
+                        className=" rounded-4 border border-2" alt="pic" style={{ maxHeight: 400, maxWidth: 450 }} />
+                    </div>
+                  </>
+                )}
             </div>
             <div className="d-flex  px-3 pt-2">
               <div className='pe-5'>
@@ -322,10 +348,11 @@ const TweetDetail = () => {
           </div>
 
         </div>
-      <div className='card-footer text-center fw-bold'>
-        Replies
+        <div className='card-footer text-center fw-bold'>
+          Replies
+        </div>
       </div>
-      </div>
+
       {/* reply tweet modal */}
       <div className="modal fade" id="replytweetModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div className="modal-dialog rounded-4">
@@ -375,17 +402,19 @@ const TweetDetail = () => {
                     ></textarea>
                   </div>
                 </div>
-
+                <div className="card border-0"  >
+                  <img src={image.preview} className="card-img-top" alt={image.data} />
+                </div>
               </div>
               <div className="modal-footer" >
-                <button className="btn btn-light me-auto text-primary" type='button' onClick={handleButtonClick}>
+                <button className="btn btn-light me-auto text-primary" type='button' onClick={handleFileButtonClick}>
                   <i className="far fa-images fa-lg"></i>
                 </button>
                 <input
                   type="file"
                   ref={fileInputRef}
                   style={{ display: 'none' }}
-                // onChange={handleFileChange}
+                  onChange={handleFileSelect}
                 />
                 <button type="submit" className="btn btn-primary shadow rounded-5 py-2 px-4" data-bs-dismiss="modal" >Reply</button>
               </div>
@@ -463,7 +492,7 @@ const TweetDetail = () => {
                     <>
                       <div className=''>
                         <img src={item?.picture}
-                          className=" rounded-4 border border-2" alt="pic" style={{ maxHeight: 400 }} />
+                          className=" rounded-4 border border-2" alt="pic" style={{ maxHeight: 400, maxWidth: 450 }} />
                       </div>
                     </>
                   )}

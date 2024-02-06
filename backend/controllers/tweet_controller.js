@@ -86,7 +86,7 @@ const disliketweet = async (req, res) => {
 
 const replytweet = async (req, res) => {
     try {
-        const { content } = req.body;
+        const { content ,picture} = req.body;
         // const picture = req.file.path;
         if (!content) {
             return res.status(400).json({
@@ -95,7 +95,7 @@ const replytweet = async (req, res) => {
         }
 
         const newTweet = new Tweet({
-            content: content, tweetedby: req.user,
+            content: content,picture:picture, tweetedby: req.user,
             //  replyingto: req.params.id
         });
         await newTweet.save();

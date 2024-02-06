@@ -9,10 +9,10 @@ import { useNavigate } from 'react-router-dom';
 const ReplyTweetModal = () => {
 
     const [auth] = useAuth()
-    const [tweet, setTweet] = useState({ content: '' });
-    // const [tweetid, setTweetid] = useState('')
+    const [tweet, setTweet] = useState({ content: '', picture: '' });
     const [item, setItem] = useState(null)
-    // const [tweetcontent, setTweetcontent] = useState("")
+    const [image, setImage] = useState({ preview: '', data: '' })
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
     const replytweetModal = document.getElementById('replytweetModal')
@@ -23,11 +23,28 @@ const ReplyTweetModal = () => {
 
         })
     }
+    let url = '';
     const fileInputRef = useRef(null);
 
-    const handleButtonClick = () => {
+    const handleFileButtonClick = () => {
         fileInputRef.current.click();
     };
+    const handleFileSelect = (e) => {
+        const img = {
+            preview: URL.createObjectURL(e.target.files[0]),
+            data: e.target.files[0]
+        }
+        setImage(img);
+
+    };
+    const handleImgUpload = async () => {
+        let formData = new FormData();
+        formData.append('file', image.data);
+
+        const response = await axios.post(`http://localhost:5000/api/file/uploadFile`, formData)
+        return response;
+    }
+
     const viewprofile = (id) => {
         navigate('/profile/' + id);
     }
@@ -35,15 +52,27 @@ const ReplyTweetModal = () => {
         navigate('/detail/' + id);
     }
     const submitHandler = async (e) => {
+        setLoading(true);
         e.preventDefault();
         try {
-            const resp = await axios.post(`http://localhost:5000/api/tweet/${item?._id}/reply`, tweet, {
+            if (image.data !== '') {
+                const imgRes = await handleImgUpload();
+                url = "http://localhost:5000/api/file/files/" + imgRes.data.fileName
+
+
+            }
+            const data = { content: tweet.content, picture: url }
+            console.log(data);
+            const resp = await axios.post(`http://localhost:5000/api/tweet/${item?._id}/reply`, data, {
                 headers: { Authorization: `Bearer ${auth?.token}` }
             });
             console.log(resp);
             if (resp.status === 201) {
                 toast.success(resp.data.message);
-                setTweet({ content: '' });
+                setTweet({ content: '', picture: '' });
+                setTimeout(() => {
+                    window.location.reload()
+                }, 3000);
             }
         } catch (error) {
             console.log(error);
@@ -100,18 +129,21 @@ const ReplyTweetModal = () => {
                                         value={tweet.content} onChange={(e) => setTweet({ ...tweet, content: e.target.value })}
                                     ></textarea>
                                 </div>
+                                <div className="card border-0"  >
+                                    <img src={image.preview} className="card-img-top" alt={image.data} />
+                                </div>
                             </div>
 
                         </div>
                         <div className="modal-footer" >
-                            <button className="btn btn-light me-auto text-primary" type='button' onClick={handleButtonClick}>
+                            <button className="btn btn-light me-auto text-primary" type='button' onClick={handleFileButtonClick}>
                                 <i className="far fa-images fa-lg"></i>
                             </button>
                             <input
                                 type="file"
                                 ref={fileInputRef}
                                 style={{ display: 'none' }}
-                            // onChange={handleFileChange}
+                                onChange={handleFileSelect}
                             />
                             <button type="submit" className="btn btn-primary shadow rounded-5 py-2 px-4" data-bs-dismiss="modal" >Reply</button>
                         </div>

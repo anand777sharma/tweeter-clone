@@ -12,7 +12,8 @@ const TweetList = () => {
 
   const [tweets, setTweets] = useState([]);
   const [auth, setAuth] = useAuth();
-  const [tweet, setTweet] = useState({ content: '' });
+  const [tweet, setTweet] = useState({ content: '', picture: '' });
+  const [image, setImage] = useState({ preview: '', data: '' })
   const [item, setItem] = useState(null)
   const navigate = useNavigate()
   const replytweetModal = document.getElementById('replytweetModal')
@@ -23,11 +24,8 @@ const TweetList = () => {
 
     })
   }
-  const fileInputRef = useRef(null);
-
-  const handleButtonClick = () => {
-    fileInputRef.current.click();
-  };
+  
+ 
 
   const viewprofile = (id) => {
     navigate('/profile/' + id);
@@ -181,6 +179,27 @@ const TweetList = () => {
     }
 
   }
+  let url = '';
+  const fileInputRef = useRef(null);
+
+  const handleFileButtonClick = () => {
+      fileInputRef.current.click();
+  };
+  const handleFileSelect = (e) => {
+      const img = {
+          preview: URL.createObjectURL(e.target.files[0]),
+          data: e.target.files[0]
+      }
+      setImage(img);
+
+  };
+  const handleImgUpload = async () => {
+      let formData = new FormData();
+      formData.append('file', image.data);
+
+      const response = await axios.post(`http://localhost:5000/api/file/uploadFile`, formData)
+      return response;
+  }
 
   const fetchData = async () => {
     try {
@@ -193,13 +212,23 @@ const TweetList = () => {
   const submitHandler = async (e) => {
     e.preventDefault();
     try {
-      const resp = await axios.post(`http://localhost:5000/api/tweet/${item?._id}/reply`, tweet, {
+      if (image.data !== '') {
+        const imgRes = await handleImgUpload();
+        url = "http://localhost:5000/api/file/files/" + imgRes.data.fileName
+
+
+      }
+      const data = { content: tweet.content, picture: url }
+      console.log(data);
+      const resp = await axios.post(`http://localhost:5000/api/tweet/${item?._id}/reply`, data, {
         headers: { Authorization: `Bearer ${auth?.token}` }
-      });
+      })
       console.log(resp);
       if (resp.status === 201) {
         toast.success(resp.data.message);
-        setTweet({ content: '' });
+        setTweet({ content: '', picture: '' });
+        setImage({ preview: '', data: '' });
+       
         fetchData();
       }
     } catch (error) {
@@ -255,7 +284,7 @@ const TweetList = () => {
 
 
             <form onSubmit={submitHandler}>
-              <div className="modal-body">
+              <div className="modal-body overflow-auto" style={{ maxHeight: "70vh", minHeight: 150 }}>
                 <div className="d-flex">
                   <Profile size="45px" source={auth?.user?.profileImg} alt="profile" />
                   <div className="mb-2" style={{ width: "100%" }}>
@@ -263,18 +292,21 @@ const TweetList = () => {
                       value={tweet.content} onChange={(e) => setTweet({ ...tweet, content: e.target.value })}
                     ></textarea>
                   </div>
+                
                 </div>
-
+                <div className="card border-0"  >
+                                <img src={image.preview} className="card-img-top" alt={image.data} />
+                            </div>
               </div>
               <div className="modal-footer" >
-                <button className="btn btn-light me-auto text-primary" type='button' onClick={handleButtonClick}>
+                <button className="btn btn-light me-auto text-primary" type='button' onClick={handleFileButtonClick}>
                   <i className="far fa-images fa-lg"></i>
                 </button>
                 <input
                   type="file"
                   ref={fileInputRef}
                   style={{ display: 'none' }}
-                // onChange={handleFileChange}
+                onChange={handleFileSelect}
                 />
                 <button type="submit" className="btn btn-primary shadow rounded-5 py-2 px-4" data-bs-dismiss="modal" >Reply</button>
               </div>

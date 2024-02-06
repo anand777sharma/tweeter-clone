@@ -78,7 +78,7 @@ const TweetCard = (props) => {
       }
       else {
         toast.success(data.message)
-       
+       window.location.reload()
       }
     } catch (error) {
 

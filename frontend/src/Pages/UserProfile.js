@@ -85,6 +85,8 @@ const UserProfile = () => {
           storage.user = data.updateduser;
           localStorage.setItem("auth", JSON.stringify(storage));
           toast.success("user updated Succesfully")
+          fetchTweet();
+          fetchreTweet();
         }
       } catch (error) {
         console.log(error);
