@@ -8,7 +8,6 @@
     "build": "npm install",
     "dev": "nodemon server.js",
     "nodemon": "nodemon"
-   
   },
   "author": "",
   "license": "ISC",
