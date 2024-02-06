@@ -1,5 +1,5 @@
 const User = require('../models/User');
-const Tweet =require('../models/Tweet');
+const Tweet = require('../models/Tweet');
 
 const getuserbyid = async (req, res) => {
     // getting id from params
@@ -96,7 +96,7 @@ const unfollowuser = async (req, res) => {
 }
 const getusertweets = async (req, res) => {
     try {
-          // getting id from params
+        // getting id from params
         const { id } = req.params;
         const tweets = await Tweet.find({ tweetedby: id }).sort({ createdAt: -1 }).populate("tweetedby");
         res.status(200).send(tweets);
@@ -107,8 +107,9 @@ const getusertweets = async (req, res) => {
 }
 const getuserretweets = async (req, res) => {
     try {
-          // getting id from params
+        // getting id from params
         const { id } = req.params;
+        // finding all the retweets and sending them as response after sorting
         const retweets = await Tweet.find({ retweetedby: id }).sort({ createdAt: -1 });
         res.status(200).send(retweets);
     } catch (error) {
@@ -117,13 +118,13 @@ const getuserretweets = async (req, res) => {
     }
 }
 const uploadprofilepic = async (req, res) => {
-      // getting id from params
+    // getting id from params
     const { id } = req.params;
     try {
         const { profileImg } = req.body;
         // console.log(req.body);
         const user = await User.findById(id);
-
+        // storing the updated user
         const updateduser = await User.findByIdAndUpdate(
             id,
             {
@@ -139,4 +140,4 @@ const uploadprofilepic = async (req, res) => {
     }
 }
 
-module.exports = { getuserbyid, getalluser, updateuserbyid, followuser, unfollowuser, getusertweets,getuserretweets, uploadprofilepic }
+module.exports = { getuserbyid, getalluser, updateuserbyid, followuser, unfollowuser, getusertweets, getuserretweets, uploadprofilepic }
