@@ -2,6 +2,7 @@ const User = require('../models/User');
 const Tweet =require('../models/Tweet');
 
 const getuserbyid = async (req, res) => {
+    // getting id from params
     const { id } = req.params;
     try {
         const user = await User.findById(id, '-password').populate("followers").populate("following");
