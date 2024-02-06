@@ -1,0 +1,50 @@
+I began the backend development of this project by defining the models.
+Initially,
+I created two models:
+User and Tweet, represented by :
+1. User.js
+2. Tweet.js
+
+I proceeded to establish the routes for the web application.
+........................................................... 
+These routes were organized into four main categories:
+auth_route, file_route, tweet_route, and user_route.js.
+
+In the auth_route, I implemented the following endpoints:
+---------------------------------------------------------
+router.post('/register', register);
+router.post('/login', login);
+=========================================================
+
+Moving on to the file_route, the endpoints were defined as:
+...........................................................
+router.post("/uploadFile", upload.single('file'), sendfilename);
+router.get("/files/:filename", downloadFile);
+===========================================================
+
+n the tweet_route, I structured the endpoints as follows:
+.........................................................
+router.post('/', authenticate, createtweet); // Create tweet
+router.put('/:id/like', authenticate, liketweet); // Like tweet
+router.put('/:id/dislike', authenticate, disliketweet); // Dislike tweet
+router.post('/:id/reply', authenticate, replytweet); // Reply to tweet
+router.get('/:id', gettweetbyid); // Get single tweet detail
+router.get('/', getalltweet); // Get all tweet detail
+router.delete('/:id', authenticate, deletetweet); // Delete tweet
+router.put('/:id/retweet', authenticate, retweet); // Retweet
+==========================================================
+
+Lastly, in the user_route, the endpoints were structured as follows:
+....................................................................
+router.get('/:id', getuserbyid); // Get user by id
+router.get("/", getalluser); // Get all users
+router.put("/:id", authenticate, updateuserbyid); // Update user by id
+router.put("/:id/follow", authenticate, followuser); // Follow user
+router.put("/:id/unfollow", authenticate, unfollowuser); // Unfollow user
+router.get("/:id/tweets", getusertweets); // Get user tweets
+router.get("/:id/retweets", getuserretweets); // Get user retweets
+router.post("/:id/uploadprofilepic", authenticate, uploadprofilepic); // Upload profile pic
+===================================================================================
+
+Subsequently, I created all the necessary controllers and middleware to handle these routes effectively.
+===================================================================================
