@@ -107,112 +107,104 @@ const OtherProfile = () => {
   }
   console.log(profile);
   return (
-    <div className="container ">
-      <Topbar />
-      <div className="row">
+    <div className="container">
+    {/* Topbar component */}
+    <Topbar />
+    <div className="row">
+        {/* Sidebar component */}
         <div className="col-lg-3 d-none d-lg-block">
-          <SideBar />
+            <SideBar />
         </div>
-        <div className="col-lg-6 overflow-auto " style={{ height: "100vh" }}>
-          <div>
-
-            <div className="container-fluid d-flex align-items-center bg-white border border-2 border-bottom-0 py-1">
-              <Link className="btn btn-light rounded-5" to="/home">
-                <i className=" fas fa-solid fa-arrow-left"></i>
-              </Link>
-              &nbsp;
-              &nbsp;
-              &nbsp;
-              <div className="fs-5 mt-1 ">
-                <span className="fw-bold">
-                  {profile?.name}
-                </span>
-
-                <div className="post-count">
-                  3 posts
+        <div className="col-lg-6 overflow-auto" style={{ height: "100vh" }}>
+            <div>
+                {/* Profile header */}
+                <div className="container-fluid d-flex align-items-center bg-white border border-2 border-bottom-0 py-1">
+                    {/* Back button */}
+                    <Link className="btn btn-light rounded-5" to="/home">
+                        <i className="fas fa-arrow-left"></i>
+                    </Link>
+                    {/* Profile name and post count */}
+                    &nbsp;&nbsp;&nbsp;
+                    <div className="fs-5 mt-1">
+                        <span className="fw-bold">
+                            {profile?.name}
+                        </span>
+                        <div className="post-count">
+                            3 posts
+                        </div>
+                    </div>
                 </div>
-              </div>
-
-            </div>
-            <div className="card rounded-0" >
-              <div className="card-header border-0 shadow-none rounded-0">
-                <div className="profilePicture d-flex justify-content-center align-items-center">
-                  <Profile size="140px" source={profile?.profileImg} alt="profile" />
+                {/* Profile details */}
+                <div className="card rounded-0">
+                    <div className="card-header border-0 shadow-none rounded-0">
+                        {/* Profile picture */}
+                        <div className="profilePicture d-flex justify-content-center align-items-center">
+                            <Profile size="140px" source={profile?.profileImg} alt="profile" />
+                        </div>
+                    </div>
+                    <div className="ms-auto">
+                        {/* Follow/Unfollow button */}
+                        {auth?.user?._id === profile?._id ?
+                            (
+                                <button className="btn btn-outline-secondary rounded-5 m-3 fw-bold" type="button" onClick={() => viewProfile(auth.user?._id)}>go to Profile</button>
+                            ) : (
+                                <>
+                                    {auth?.user?.following?.some(i => i === profile?._id) ? (
+                                        <button className="btn btn-outline-secondary rounded-5 m-3 fw-bold" onClick={() => unfollowuser(profile?._id)}>
+                                            <i className="fas fa-user-minus fa-md"></i> unfollow
+                                        </button>
+                                    ) : (
+                                        <button className="btn btn-outline-secondary rounded-5 m-3 px-4 fw-bold" onClick={() => followuser(profile?._id)}>
+                                            <i className="fas fa-user-plus fa-md"></i> follow
+                                        </button>
+                                    )}
+                                </>
+                            )
+                        }
+                    </div>
+                    {/* Profile information */}
+                    <div className='card-body'>
+                        <p className='ps-4 text-secondary'>
+                            <span className="fs-5 fw-bold text-dark">
+                                {profile?.name}
+                            </span>
+                            <br />
+                            <span className='username text-secondary'>
+                                @{profile?.username}
+                            </span>
+                        </p>
+                        <p className='ps-4 text-secondary'>
+                            <p className='mb-2'>
+                                <i className="far fa-calendar-alt fa-lg"></i>
+                                &nbsp;&nbsp;joined {profile?.createdAt}
+                            </p>
+                            {/* Following and Followers count */}
+                            <span>
+                                <span className="fw-bold">{profile?.following.length}</span> Following
+                            </span>
+                            &nbsp;&nbsp;
+                            <span>
+                                <span className="fw-bold">{profile?.followers.length}</span> Followers
+                            </span>
+                        </p>
+                    </div>
+                    {/* Footer */}
+                    <div className="card-footer text-center fw-bold fs-6">
+                        Tweet and Replies
+                    </div>
                 </div>
-              </div>
-              <div className="ms-auto">
-                {auth?.user?._id === profile?._id ?
-                  (<>
-                    <button className="btn btn-outline-secondary rounded-5 m-3 fw-bold" type="button" onClick={() => viewProfile(auth.user?._id)} >go to Profile</button>
-                  </>)
-                  :
-                  (<>
-                    <>
-                      {
-                        auth?.user?.following?.some(i => i === profile?._id) ? (
-                          <button
-                            className="btn btn-outline-secondary rounded-5 m-3 fw-bold"
-                            onClick={() => unfollowuser(profile?._id)}
-                          >
-                            <i className="fas fa-regular fa-user-minus fa-md"></i> unfollow
-                          </button>
-                        ) : (
-                          <button
-                            className="btn btn-outline-secondary rounded-5 m-3 px-4 fw-bold"
-                            onClick={() => followuser(profile?._id)}
-                          >
-                            <i className="fas fa-regular fa-user-plus fa-md"></i> follow
-                          </button>
-                        )
-                      }
-                    </>
-                  </>)}
-              </div>
-              <div className='card-body'>
-                <p className='ps-4 text-secondary'>
-                  <span className="fs-5 fw-bold text-dark">
-                    {profile?.name}
-                  </span> <br />
-                  <span className='username text-secondary '>
-                    @{profile?.username}
-                  </span>
-                </p>
-                <p className='ps-4 text-secondary'>
-                  <p className='mb-2'>
-                    <i class="far fa-calendar-alt fa-lg"></i>
-                    &nbsp;
-                    &nbsp; joined {profile?.createdAt}
-                  </p>
-
-                  <span><span className="fw-bold"> {profile?.following.length} </span>Following  </span>
-                  &nbsp;
-                  &nbsp;
-                  <span><span className="fw-bold">{profile?.followers.length}</span> Followers  </span>
-                </p>
-              </div>
-              <div className="card-footer text-center fw-bold fs-6">
-                Tweet and Replies
-              </div>
+                {/* Displaying tweets */}
+                {tweets.map((item) => (
+                    <TweetCard item={item} />
+                ))}
             </div>
-            {
-              tweets.map((item) => (
-                <>
-                  <TweetCard item={item} />
-                </>
-
-              ))
-            }
-
-          </div>
-
-          <CreateTweetModal />
+            {/* Create Tweet Modal component */}
+            <CreateTweetModal />
         </div>
-        <div className="col-lg-3 d-none d-lg-block ps-3">
-
-        </div>
-      </div>
-    
+        <div className="col-lg-3 d-none d-lg-block ps-3"></div>
     </div>
+</div>
+
   )
 }
 

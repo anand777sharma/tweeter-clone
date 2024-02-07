@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import "../allStyle/tweetDetail.css"
-// import Reply from './Reply'
 import TweetCard from './TweetCard'
 import axios from 'axios';
 import Profile from './Profile';
@@ -47,8 +46,6 @@ const TweetDetail = () => {
     const response = await axios.post(`http://localhost:5000/api/file/uploadFile`, formData)
     return response;
   }
-
-
   const viewprofile = (id) => {
     navigate('/profile/' + id);
   }
@@ -196,7 +193,7 @@ const TweetDetail = () => {
 
 
       }
-      const data = { content: tweet.content, picture: url }
+      const data = { content: tweetr.content, picture: url }
       console.log(data);
       const resp = await axios.post(`http://localhost:5000/api/tweet/${info?._id}/reply`, data, {
         headers: { Authorization: `Bearer ${auth?.token}` }
@@ -221,27 +218,30 @@ const TweetDetail = () => {
   console.log(tweet);
   return (
     <div>
-    {/* Header Section */}
-    <div className="container-fluid d-flex bg-light align-items-center py-1 border border-2 border-bottom-0">
+    {/* Navigation Bar */}
+    <div className="container-fluid d-flex bg-light align-items-center  py-1 border border-2 border-bottom-0">
         <div>
             {/* Back Button */}
             <Link className="btn btn-light rounded-5" to="/home">
-                <i className="fas fa-solid fa-arrow-left"></i>
+                <i className=" fas fa-solid fa-arrow-left"></i>
             </Link>
         </div>
-        {/* Title */}
+        {/* Tweet Header */}
+        &nbsp;
+        &nbsp;
+        &nbsp;
         <div className="fs-5 fw-bold ">
             Tweet
         </div>
-        {/* Tweet Button */}
+        {/* Post Button */}
         <button className="btn btn-primary btn-lg shadow m-1 px-5 rounded-5 ms-auto" data-bs-toggle="modal" data-bs-target="#createtweetModal">
             post
         </button>
     </div>
 
-    {/* Individual Tweet Card */}
+    {/* Tweet Container */}
     <div className='card rounded-0'>
-        <div className="card-body ps-3 pe-2 py-2 d-flex">
+        <div className="card-body  ps-3 pe-2 py-2 d-flex">
             {/* Profile Image */}
             <Profile source={tweet?.tweetedby?.profileImg} size="40px" alt="pic" />
             <div className='ps-2 w-100 '>
@@ -250,8 +250,7 @@ const TweetDetail = () => {
                         {/* User Info */}
                         <button className='border-0 btn btn-lignt btn-lg p-0 fs-6' onClick={() => viewprofile(tweet?.tweetedby?._id)} >
                             <span className='fw-bold '>{tweet?.tweetedby?.name} <i className="fas fa-check-circle fa-md text-primary"></i></span>
-                            &nbsp; @{tweet?.tweetedby?.username}
-                        </button>
+                            &nbsp; @{tweet?.tweetedby?.username}</button>
                         {/* Tweet Time */}
                         <span className="ps-2" style={{ fontSize: "12px" }}>
                             - {tweet?.createdAt}
@@ -269,24 +268,27 @@ const TweetDetail = () => {
                             </button>)
                             :
                             (<>
-                                {auth?.user?.following?.some(i => i === tweet?.tweetedby?._id) ? (
-                                    <button
-                                        className=" btn btn-light p-2 rounded-4"
-                                        onClick={() => unfollowuser(tweet?.tweetedby?._id)}
-                                    >
-                                        <i className="fas fa-regular fa-user-minus fa-md"></i>
-                                    </button>
-                                ) : (
-                                    <button
-                                        className=" btn btn-light p-2 rounded-4"
-                                        onClick={() => followuser(tweet?.tweetedby?._id)}
-                                    >
-                                        <i className="fas fa-regular fa-user-plus fa-md"></i>
-                                    </button>
-                                )}
+                                {
+                                    auth?.user?.following?.some(i => i === tweet?.tweetedby?._id) ? (
+                                        <button
+                                            className=" btn btn-light p-2 rounded-4"
+                                            onClick={() => unfollowuser(tweet?.tweetedby?._id)}
+                                        >
+                                            <i className="fas fa-regular fa-user-minus fa-md"></i>
+                                        </button>
+                                    ) : (
+                                        <button
+                                            className=" btn btn-light p-2 rounded-4"
+                                            onClick={() => followuser(tweet?.tweetedby?._id)}
+                                        >
+                                            <i className="fas fa-regular fa-user-plus fa-md"></i>
+                                        </button>
+                                    )
+                                }
                             </>
                             )
                         }
+
                     </div>
                 </div>
 
@@ -298,6 +300,7 @@ const TweetDetail = () => {
                     {/* Tweet Picture */}
                     {tweet?.picture === '' ?
                         ('') :
+
                         (
                             <>
                                 <div>
@@ -307,11 +310,10 @@ const TweetDetail = () => {
                             </>
                         )}
                 </div>
-                {/* Tweet Actions */}
                 <div className="d-flex  px-3 pt-2">
                     <div className='pe-5'>
+                        {/* Like Button */}
                         <>
-                            {/* Like Button */}
                             {tweet?.likes?.some(i => i === auth?.user?._id) ? (
                                 <button
                                     className="btn btn-light text-danger px-2 py-1 rounded-circle "
@@ -352,20 +354,96 @@ const TweetDetail = () => {
             </div>
         </div>
         <div className='card-footer text-center fw-bold'>
-            {/* Replies Header */}
             Replies
         </div>
     </div>
 
     {/* Reply Tweet Modal */}
     <div className="modal fade" id="replytweetModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        {/* Modal content */}
-    </div>
+        {/* Modal Content */}
+        <div className="modal-dialog rounded-4">
+            <div className="modal-content rounded-4">
+                <div className="modal-header border-0"  >
+                    {/* Close Button */}
+                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                {/* Tweet Info */}
+                {info === null
+                    ? ('') : (
+                        <>
+                            <div className=" border-0 ps-3 pe-2 py-0  d-flex">
+                                <Profile source={info?.tweetedby?.profileImg} size="45px" alt="pic" />
+                                <div className='ps-2 w-100 '>
+                                    <div className='d-flex align-items-center w-100'>
+                                        <div className='ps-0 d-flex align-items-center'>
+                                            <button className='border-0 btn btn-lignt btn-lg p-0' style={{ fontSize: "17px" }} onClick={() => viewprofile(info?.tweetedby?._id)} data-bs-dismiss="modal" >
+                                                <span className='' style={{ fontWeight: 600 }}>{info?.tweetedby?.name} <i className="fas fa-check-circle fa-md text-primary"></i></span>
+                                                &nbsp;@{info?.tweetedby?.username}
+                                            </button>
+                                            {/* Tweet Time */}
+                                            <span className="ps-2 " style={{ fontSize: "14px" }}>
+                                                - {info?.createdAt}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div className="card border-0 " onClick={() => viewtweet(info?._id)} data-bs-dismiss="modal">
+                                        {/* Tweet Content */}
+                                        <p style={{ fontSize: "17px" }}>
+                                            {info?.content?.substring(0, 40)}...
+                                        </p>
+                                    </div>
+                                    {/* Replying To */}
+                                    <p className='py-0 mt-0' style={{ fontSize: "18px" }}>Replying to  <span className='text-primary'>@{info?.tweetedby?.username}</span></p>
+                                </div>
+                            </div>
+                            {/* Divider Line */}
+                            <span className='border border-2 replyline' ></span>
+                        </>
+                    )}
 
-    {/* Replies */}
+                <form onSubmit={submitHandler}>
+                    <div className="modal-body">
+                        <div className="d-flex">
+                            {/* User Profile Image */}
+                            <Profile size="45px" source={auth?.user?.profileImg} alt="profile" />
+                            <div className="mb-2" style={{ width: "100%" }}>
+                                {/* Reply Textarea */}
+                                <textarea className="form-control border-0 " rows="3" placeholder='Post your Reply'
+                                    value={tweetr?.content} onChange={(e) => setTweetr({ ...tweetr, content: e.target.value })}
+                                ></textarea>
+                            </div>
+                        </div>
+                        <div className="card border-0"  >
+                            {/* Image Preview */}
+                            <img src={image.preview} className="card-img-top" alt={image.data} />
+                        </div>
+                    </div>
+                    {/* Modal Footer */}
+                    <div className="modal-footer" >
+                        {/* Image Upload Button */}
+                        <button className="btn btn-light me-auto text-primary" type='button' onClick={handleFileButtonClick}>
+                            <i className="far fa-images fa-lg"></i>
+                        </button>
+                        {/* File Input */}
+                        <input
+                            type="file"
+                            ref={fileInputRef}
+                            style={{ display: 'none' }}
+                            onChange={handleFileSelect}
+                        />
+                        {/* Submit Button */}
+                        <button type="submit" className="btn btn-primary shadow rounded-5 py-2 px-4" data-bs-dismiss="modal" >Reply</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {/* Reply Tweet Modal */}
+
+    {/* Display Replies */}
     {tweet?.replies?.map((item) => (
         <div key={item._id} >
-            {/* Individual Reply */}
+            {/* Individual Reply Container */}
             <div className="border border-2 border-bottom-0 ps-3 pe-2 py-2 d-flex">
                 {/* Profile Image */}
                 <Profile source={item?.tweetedby?.profileImg} size="40px" alt="pic" />
@@ -377,13 +455,14 @@ const TweetDetail = () => {
                                 <span className='fw-bold '>{item?.tweetedby?.name} <i className="fas fa-check-circle fa-md text-primary"></i></span>
                                 &nbsp; @{item?.tweetedby?.username}
                             </button>
-                            {/* Reply Time */}
+                            {/* Tweet Time */}
                             <span className="ps-2" style={{ fontSize: "12px" }}>
                                 - {item?.createdAt}
                             </span>
-                            {/* Replying To */}
+                            {/* Display "replying to" only if replyingto is not null */}
                             {item?.replyingto === null ? (<p>replying to @{item?.replyingto}</p>) : ('')}
                         </div>
+
                         <div className="ms-auto fs-4 text-muted ">
                             {/* Reply Actions */}
                             {auth?.user?._id === item?.tweetedby?._id ?
@@ -395,26 +474,29 @@ const TweetDetail = () => {
                                 </button>)
                                 :
                                 (<>
-                                    {auth?.user?.following?.some(i => i === item?.tweetedby?._id) ? (
-                                        <button
-                                            className="dropdown-item btn btn-light p-2 rounded-4"
-                                            onClick={() => unfollowuser(item?.tweetedby?._id)}
-                                        >
-                                            <i className="fas fa-regular fa-user-minus fa-md"></i>
-                                        </button>
-                                    ) : (
-                                        <button
-                                            className="dropdown-item btn btn-light p-2 rounded-4"
-                                            onClick={() => followuser(item?.tweetedby?._id)}
-                                        >
-                                            <i className="fas fa-regular fa-user-plus fa-md"></i>
-                                        </button>
-                                    )}
+                                    {
+                                        auth?.user?.following?.some(i => i === item?.tweetedby?._id) ? (
+                                            <button
+                                                className="dropdown-item btn btn-light p-2 rounded-4"
+                                                onClick={() => unfollowuser(item?.tweetedby?._id)}
+                                            >
+                                                <i className="fas fa-regular fa-user-minus fa-md"></i>
+                                            </button>
+                                        ) : (
+                                            <button
+                                                className="dropdown-item btn btn-light p-2 rounded-4"
+                                                onClick={() => followuser(item?.tweetedby?._id)}
+                                            >
+                                                <i className="fas fa-regular fa-user-plus fa-md"></i>
+                                            </button>
+                                        )
+                                    }
                                 </>
                                 )
                             }
                         </div>
                     </div>
+
                     <div className="card border-0 " onClick={() => viewtweet(item?._id)}>
                         {/* Reply Content */}
                         <p style={{ fontSize: "14px" }}>
@@ -423,6 +505,7 @@ const TweetDetail = () => {
                         {/* Reply Picture */}
                         {item?.picture === '' ?
                             ('') :
+
                             (
                                 <>
                                     <div className=''>
@@ -432,11 +515,12 @@ const TweetDetail = () => {
                                 </>
                             )}
                     </div>
+
                     {/* Reply Actions */}
                     <div className="d-flex  px-3 pt-2">
                         <div className='pe-5'>
+                            {/* Like Button */}
                             <>
-                                {/* Like Button */}
                                 {item?.likes?.some(i => i === auth?.user?._id) ? (
                                     <button
                                         className="btn btn-light text-danger px-2 py-1 rounded-circle "

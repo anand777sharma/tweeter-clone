@@ -3,30 +3,35 @@ import SideBar from '../components/SideBar'
 import TweetList from '../components/TweetList'
 import Topbar from '../components/Topbar'
 import CreateTweetModal from '../components/floatingModels/CreateTweetModal'
-import ReplyTweetModal from '../components/floatingModels/ReplyTweetModal'
 const Home = () => {
     return (
         <div>
-            <div className="container " >
-                <Topbar />
-                <div className="row">
-                    <div className="col-lg-3 d-none d-lg-block">
-                        <SideBar />
-                    </div>
-                    <div className="col-lg-6 overflow-auto " style={{ height: "100vh" }}>
-                        <TweetList />
-
-                      <CreateTweetModal/>
-                      {/* <ReplyTweetModal/> */}
-                    </div>
-                    <div className="col-lg-3 d-none d-lg-block ps-3">
-                        {/* <RightBar /> */}
-                    </div>
+        {/* Main container */}
+        <div className="container">
+            {/* Topbar component */}
+            <Topbar />
+            {/* Row for layout */}
+            <div className="row">
+                {/* Sidebar column for large screens */}
+                <div className="col-lg-3 d-none d-lg-block">
+                    {/* Sidebar component */}
+                    <SideBar />
                 </div>
-               
+                {/* Main content column */}
+                <div className="col-lg-6 overflow-auto" style={{ height: "100vh" }}>
+                    {/* TweetList component */}
+                    <TweetList />
+                    {/* CreateTweetModal component */}
+                    <CreateTweetModal/>
+                </div>
+                {/* Additional column for large screens */}
+                <div className="col-lg-3 d-none d-lg-block ps-3">
+                    {/* This column is currently empty */}
+                </div>
             </div>
-
         </div>
+    </div>
+    
     )
 }
 
