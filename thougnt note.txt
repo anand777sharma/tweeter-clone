@@ -48,3 +48,40 @@ router.post("/:id/uploadprofilepic", authenticate, uploadprofilepic); // Upload 
 
 Subsequently, I created all the necessary controllers and middleware to handle these routes effectively.
 ===================================================================================
+
+In the frontend part, React is utilized along with Axios for data fetching and sending requests to the backend. Bootstrap is employed for styling, while React Toastify is utilized for displaying responses and messages from the backend. The components in the frontend are structured as follows:
+
+1. Floating Modals:
+   - CreateTweetModal.js
+   - EditProfileModal.js
+   - ReplyTweetModal.js
+
+2. Spinner
+
+3. Components:
+   - Profile.js
+   - Sidebar.js
+   - Topbar.js
+   - TweetCard.js
+   - TweetDetail.js
+   - TweetList.js
+
+4. Pages:
+   - Home.js
+   - Login.js
+   - OtherProfile.js
+   - Signup.js
+   - Tweet.js
+   - UserProfile.js
+
+All these components and pages are then rendered in the App.js file.
+This systematic structuring ensures a clear separation of concerns 
+and facilitates easier maintenance and scalability of the application.
+
+i have deleted node_module files for both backend and frontend before project submission so please 
+Run command "npm inatall" and then "npm start" for both backend and frontend.
+
+Throughout the development of this project, I encountered several challenges arising
+from the absence of doubt-solving sessions and lack of discussions regarding the 
+Twitter clone project. Consequently, I may have misunderstood certain project requirements.
+I sincerely apologize for any errors or misinterpretations that may have occurred as a result.
