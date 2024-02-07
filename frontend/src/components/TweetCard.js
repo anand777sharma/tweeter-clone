@@ -1,6 +1,6 @@
 import React from 'react'
 import Profile from './Profile';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/auth';
 import { toast } from "react-toastify"
 import axios from 'axios';
@@ -31,6 +31,7 @@ const TweetCard = (props) => {
         storage.user = data.updateduser;
         localStorage.setItem("auth", JSON.stringify(storage));
         toast.success(data.message)
+        window.location.reload()
       }
     } catch (error) {
 
@@ -57,6 +58,7 @@ const TweetCard = (props) => {
         storage.user = data.updateduser;
         localStorage.setItem("auth", JSON.stringify(storage));
         toast.success(data.message)
+        window.location.reload()
       }
     } catch (error) {
 
@@ -102,7 +104,7 @@ const TweetCard = (props) => {
         console.log('Calling updatereload from like function');
         
 
-        // window.location.reload();
+        window.location.reload();
       }
     } catch (error) {
       toast.error(error)
@@ -123,8 +125,8 @@ const TweetCard = (props) => {
       }
       else {
         toast.success(data.message)
-        console.log('Calling updatereload from unlike function');
-       
+      
+        window.location.reload()
 
       }
     } catch (error) {

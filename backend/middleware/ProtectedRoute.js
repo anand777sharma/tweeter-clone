@@ -24,7 +24,9 @@ const autheticate = async (req, res, next) => {
         const user = await User.findById({ _id: decoded._id }, { password: 0 });
         //check if the User Exist
         if (!user)
-            return res.status(401).json({ message: "UnAuthoried.." })
+          {
+              return res.status(401).json({ message: "UnAuthoried.." })
+            }
         req.user=user;
         //proceed to route
         next(); 

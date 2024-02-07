@@ -18,12 +18,10 @@ mongoose.connection.on('error',(error)=>{
 app.use(cors());
 app.use(express.json());
 
-// app.use('/uploads',express.static('uploads'));
 app.use('/api/auth',require('./routes/auth_route'));
 app.use('/api/user',require('./routes/user_route'));
 app.use('/api/tweet',require('./routes/tweet_route'));
 app.use('/api/file',require('./routes/file_route'));
-
 
 
 app.listen(process.env.PORT, () => {

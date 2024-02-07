@@ -1,2 +1,0 @@
-SQL DB -> Tables = Collections in NoSQL DB like MongoDB
-Rows in SQL DB Tables = Documents in NoSQL DB like MongoDB

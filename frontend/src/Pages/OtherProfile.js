@@ -6,7 +6,7 @@ import Topbar from '../components/Topbar'
 import CreateTweetModal from '../components/floatingModels/CreateTweetModal'
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { Link, useParams,useNavigate } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/auth';
 import { toast } from 'react-toastify';
 import EditProfileModal from "../components/floatingModels/EditProfileModal"
@@ -38,7 +38,7 @@ const OtherProfile = () => {
   }
   const fetchTweet = async () => {
     try {
-      const resp = await axios.get( `http://localhost:5000/api/user/${id}/tweets`);
+      const resp = await axios.get(`http://localhost:5000/api/user/${id}/tweets`);
       setTweets(resp.data);
     } catch (error) {
       console.log(error);
@@ -68,6 +68,8 @@ const OtherProfile = () => {
         storage.user = data.updateduser;
         localStorage.setItem("auth", JSON.stringify(storage));
         toast.success(data.message)
+        fetchData();
+        fetchTweet();
       }
     } catch (error) {
 
@@ -85,7 +87,8 @@ const OtherProfile = () => {
         }
       );
       if (data?.error) {
-        toast.error(data?.error)
+        fetchData();
+        fetchTweet();
       }
       else {
         setAuth({ ...auth, user: data?.updateduser })
@@ -94,6 +97,8 @@ const OtherProfile = () => {
         storage.user = data.updateduser;
         localStorage.setItem("auth", JSON.stringify(storage));
         toast.success(data.message)
+        fetchData();
+        fetchTweet();
       }
     } catch (error) {
 
@@ -143,26 +148,26 @@ const OtherProfile = () => {
                   </>)
                   :
                   (<>
-                  <>
-                  {
-                    auth?.user?.following?.some(i => i === profile?._id) ? (
-                      <button
-                      className="btn btn-outline-secondary rounded-5 m-3 fw-bold"
-                        onClick={() => unfollowuser(profile?._id)}
-                      >
-                        <i className="fas fa-regular fa-user-minus fa-md"></i> unfollow
-                      </button>
-                    ) : (
-                      <button
-                        className="btn btn-outline-secondary rounded-5 m-3 px-4 fw-bold"
-                        onClick={() => followuser(profile?._id)}
-                      >
-                        <i className="fas fa-regular fa-user-plus fa-md"></i> follow
-                      </button>
-                    )
-                  }
-                </>
-                    </>)}
+                    <>
+                      {
+                        auth?.user?.following?.some(i => i === profile?._id) ? (
+                          <button
+                            className="btn btn-outline-secondary rounded-5 m-3 fw-bold"
+                            onClick={() => unfollowuser(profile?._id)}
+                          >
+                            <i className="fas fa-regular fa-user-minus fa-md"></i> unfollow
+                          </button>
+                        ) : (
+                          <button
+                            className="btn btn-outline-secondary rounded-5 m-3 px-4 fw-bold"
+                            onClick={() => followuser(profile?._id)}
+                          >
+                            <i className="fas fa-regular fa-user-plus fa-md"></i> follow
+                          </button>
+                        )
+                      }
+                    </>
+                  </>)}
               </div>
               <div className='card-body'>
                 <p className='ps-4 text-secondary'>
@@ -204,7 +209,7 @@ const OtherProfile = () => {
           <CreateTweetModal />
         </div>
         <div className="col-lg-3 d-none d-lg-block ps-3">
-         
+
         </div>
       </div>
       <Navbar />

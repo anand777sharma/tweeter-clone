@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useRef } from 'react'
 import Profile from '../Profile';
 import { toast } from 'react-toastify';
 import "../../allStyle/createtweetmodal.css"
@@ -8,79 +8,101 @@ import { useNavigate } from 'react-router-dom';
 
 const ReplyTweetModal = () => {
 
-    const [auth] = useAuth()
-    const [tweet, setTweet] = useState({ content: '', picture: '' });
-    const [item, setItem] = useState(null)
-    const [image, setImage] = useState({ preview: '', data: '' })
-    const [loading, setLoading] = useState(false);
-    const navigate = useNavigate();
-
-    const replytweetModal = document.getElementById('replytweetModal')
-    if (replytweetModal) {
-        replytweetModal.addEventListener('show.bs.modal', event => {
-            const button = event.relatedTarget
-            setItem(JSON.parse(button.getAttribute('info')))
-
-        })
-    }
-    let url = '';
-    const fileInputRef = useRef(null);
-
-    const handleFileButtonClick = () => {
-        fileInputRef.current.click();
-    };
-    const handleFileSelect = (e) => {
-        const img = {
-            preview: URL.createObjectURL(e.target.files[0]),
-            data: e.target.files[0]
-        }
-        setImage(img);
-
-    };
-    const handleImgUpload = async () => {
-        let formData = new FormData();
-        formData.append('file', image.data);
-
-        const response = await axios.post(`http://localhost:5000/api/file/uploadFile`, formData)
-        return response;
-    }
-
-    const viewprofile = (id) => {
-        navigate('/profile/' + id);
-    }
-    const viewtweet = (id) => {
-        navigate('/detail/' + id);
-    }
-    const submitHandler = async (e) => {
-        setLoading(true);
-        e.preventDefault();
-        try {
-            if (image.data !== '') {
-                const imgRes = await handleImgUpload();
-                url = "http://localhost:5000/api/file/files/" + imgRes.data.fileName
-
-
-            }
-            const data = { content: tweet.content, picture: url }
-            console.log(data);
-            const resp = await axios.post(`http://localhost:5000/api/tweet/${item?._id}/reply`, data, {
-                headers: { Authorization: `Bearer ${auth?.token}` }
-            });
-            console.log(resp);
-            if (resp.status === 201) {
-                toast.success(resp.data.message);
-                setTweet({ content: '', picture: '' });
-                setTimeout(() => {
-                    window.location.reload()
-                }, 3000);
-            }
-        } catch (error) {
-            console.log(error);
-            toast.error(error.response.data.message);
-
-        }
-    }
-
+      // Initialize state variables
+      const [auth] = useAuth();
+      const [tweet, setTweet] = useState({ content: '', picture: '' });
+      const [item, setItem] = useState(null); // Store item being replied to
+      const [image, setImage] = useState({ preview: '', data: '' });
+      const [loading, setLoading] = useState(false);
+      const navigate = useNavigate(); // Navigate to other routes
+  
+      // Add event listener when replytweetModal is shown
+      const replytweetModal = document.getElementById('replytweetModal');
+      if (replytweetModal) {
+          replytweetModal.addEventListener('show.bs.modal', event => {
+              const button = event.relatedTarget;
+              setItem(JSON.parse(button.getAttribute('info'))); // Set item being replied to
+          });
+      }
+  
+      let url = ''; // Store image URL
+      const fileInputRef = useRef(null); // Reference for file input element
+  
+      // Function to handle click event on file input button
+      const handleFileButtonClick = () => {
+          fileInputRef.current.click(); // Programmatically trigger click on file input
+      };
+  
+      // Function to handle file selection
+      const handleFileSelect = (e) => {
+          const img = {
+              preview: URL.createObjectURL(e.target.files[0]), // Create preview URL for selected image
+              data: e.target.files[0] // Store selected image file object
+          };
+          setImage(img); // Update image state with selected image information
+      };
+  
+      // Function to handle image upload to server
+      const handleImgUpload = async () => {
+          let formData = new FormData();
+          formData.append('file', image.data);
+  
+          const response = await axios.post(`http://localhost:5000/api/file/uploadFile`, formData);
+          return response;
+      };
+  
+      // Function to view user profile
+      const viewprofile = (id) => {
+          navigate('/profile/' + id); // Navigate to user profile route
+      };
+  
+      // Function to view tweet details
+      const viewtweet = (id) => {
+          navigate('/detail/' + id); // Navigate to tweet detail route
+      };
+  
+      // Function to handle form submission
+      const submitHandler = async (e) => {
+          setLoading(true); // Set loading state to true to indicate submission is in progress
+          e.preventDefault(); // Prevent default form submission behavior
+  
+          try {
+              if (image.data !== '') {
+                  // If an image is selected, upload it to the server
+                  const imgRes = await handleImgUpload();
+                  url = "http://localhost:5000/api/file/files/" + imgRes.data.fileName; // Construct image URL
+              }
+  
+              // Prepare data object to send in POST request
+              const data = { content: tweet.content, picture: url };
+              console.log(data);
+  
+              // Send POST request to reply to the tweet
+              const resp = await axios.post(`http://localhost:5000/api/tweet/${item?._id}/reply`, data, {
+                  headers: { Authorization: `Bearer ${auth?.token}` } // Include authorization token in request headers
+              });
+  
+              console.log(resp); // Log response to console
+  
+              // If reply is successful
+              if (resp.status === 201) {
+                  // Display success toast notification
+                  toast.success(resp.data.message);
+                  // Reset tweet state to empty values
+                  setTweet({ content: '', picture: '' });
+                  // Reload the page after 3 seconds to reflect changes
+                  setTimeout(() => {
+                      window.location.reload();
+                  }, 3000);
+              }
+          } catch (error) {
+              console.log(error); // Log error to console
+              // Display error message in toast notification
+              toast.error(error.response.data.message);
+          } finally {
+              setLoading(false); // Set loading state to false
+          }
+      };
     return (
         <div className="modal fade" id="replytweetModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div className="modal-dialog rounded-4">

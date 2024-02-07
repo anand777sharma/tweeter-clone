@@ -17,6 +17,7 @@ router.put("/:id/follow",autheticate, followuser);
 router.put("/:id/unfollow",autheticate, unfollowuser);
 // get user tweets
 router.get("/:id/tweets", getusertweets);
+// get all user tweet
 router.get("/:id/retweets", getuserretweets);
 // uploade profile pic
 router.post("/:id/uploadprofilepic",autheticate, uploadprofilepic);
