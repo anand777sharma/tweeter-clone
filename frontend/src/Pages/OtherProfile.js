@@ -1,7 +1,6 @@
 import React from 'react'
 import "../allStyle/profilesection.css"
 import SideBar from '../components/SideBar'
-import Navbar from '../components/Navbar'
 import Topbar from '../components/Topbar'
 import CreateTweetModal from '../components/floatingModels/CreateTweetModal'
 import axios from 'axios';
@@ -212,7 +211,7 @@ const OtherProfile = () => {
 
         </div>
       </div>
-      <Navbar />
+    
     </div>
   )
 }

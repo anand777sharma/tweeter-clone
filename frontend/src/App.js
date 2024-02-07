@@ -8,7 +8,6 @@ import SignUp from './Pages/SignUp';
 import UserProfile from './Pages/UserProfile';
 import { ToastContainer } from 'react-toastify';
 import OtherProfile from './Pages/OtherProfile';
-import TweetDetail from './components/TweetDetail';
 
 
 function App() {

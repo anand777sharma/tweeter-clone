@@ -1,7 +1,6 @@
 import React from 'react'
 import TweetDetail from '../components/TweetDetail'
 import SideBar from '../components/SideBar'
-import Navbar from '../components/Navbar'
 import Topbar from '../components/Topbar'
 import CreateTweetModal from '../components/floatingModels/CreateTweetModal'
 import ReplyTweetModal from '../components/floatingModels/ReplyTweetModal'
@@ -24,7 +23,7 @@ const Tweet = () => {
 
           </div>
         </div>
-        <Navbar />
+      
       </div>
 
     </div>
