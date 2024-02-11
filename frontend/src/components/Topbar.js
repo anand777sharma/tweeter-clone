@@ -29,17 +29,16 @@ const Topbar = () => {
                 </button>
 
                 {/* link to home page */}
-                <Link className="text-decoration-none border-0 fs-5 mt-1 text-dark" to="/home">
+                <Link className="text-decoration-none border-0 fs-5 mt-1 mx-auto text-dark" to="/home">
                     <img style={{ height: "40px" }} src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Logo_of_Twitter.svg/512px-Logo_of_Twitter.svg.png" alt="logo" />
                 </Link>
-                <a className="text-decoration-none border-0 fs-5 mt-1 text-dark">
+              
                     <div className="ms-auto fs-3 text-muted ">
                         {/* link for logout */}
                         <Link className='text-decoration-none text-center text-secondary' onClick={handleLogout} to="/">
                             <i className="fas fa-sign-out-alt fa-lg pe-2"></i>
                         </Link>
                     </div>
-                </a>
             </div>
         </div>
     )

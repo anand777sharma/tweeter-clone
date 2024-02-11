@@ -3,7 +3,6 @@ import TweetDetail from '../components/TweetDetail'
 import SideBar from '../components/SideBar'
 import Topbar from '../components/Topbar'
 import CreateTweetModal from '../components/floatingModels/CreateTweetModal'
-import ReplyTweetModal from '../components/floatingModels/ReplyTweetModal'
 const Tweet = () => {
   return (
     <div>

@@ -13,7 +13,7 @@ import BackToLoginSpinner from './components/spinner/BackToLoginSpinner';
 
 
 function App() {
-  const [auth, setAuth] = useAuth();
+  const [auth] = useAuth();
   return (
     <Router>
       <div className="container-fluid">

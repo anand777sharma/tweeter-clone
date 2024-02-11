@@ -1,7 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState,useCallback } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import "../allStyle/tweetDetail.css"
-import TweetCard from './TweetCard'
 import axios from 'axios';
 import Profile from './Profile';
 import { toast } from 'react-toastify';
@@ -174,7 +173,7 @@ const TweetDetail = () => {
     }
 
   }
-  const fetchData = async () => {
+  const fetchData = useCallback (async() => {
     try {
       const resp = await axios.get('http://localhost:5000/api/tweet/' + id);
       const tdata = resp.data;
@@ -183,7 +182,7 @@ const TweetDetail = () => {
     } catch (error) {
       console.log(error);
     }
-  }
+  },[id])
   const submitHandler = async (e) => {
     e.preventDefault();
     try {
@@ -213,7 +212,7 @@ const TweetDetail = () => {
 
   useEffect(() => {
     fetchData();
-  }, [])
+  }, [fetchData])
 
   console.log(tweet);
   return (

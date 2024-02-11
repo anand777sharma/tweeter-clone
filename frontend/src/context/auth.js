@@ -17,7 +17,7 @@ if(data){
     })
 }
 
-}, [])
+}, [auth])
 
     return(
         <AuthContext.Provider value={[auth,setAuth]}>

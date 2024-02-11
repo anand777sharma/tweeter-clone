@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useRef,useCallback } from 'react'
 import "../allStyle/profilesection.css"
 import SideBar from '../components/SideBar'
 import Topbar from '../components/Topbar'
@@ -23,7 +23,7 @@ const UserProfile = () => {
   const { id } = useParams();
 
   let url = '';
-
+console.log(user);
   const profilepictureRef = useRef(null);
 
   const handleuploadprofile = () => {
@@ -37,7 +37,7 @@ const UserProfile = () => {
     setProfileImage(img);
 
   };
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       const resp = await axios.get('http://localhost:5000/api/user/' + id);
       const Pdata = resp.data;
@@ -46,7 +46,7 @@ const UserProfile = () => {
     } catch (error) {
       console.log(error);
     }
-  }
+  },[id])
   const handleImgUpload = async () => {
     let formData = new FormData();
     formData.append('file', profileimage.data);
@@ -66,7 +66,6 @@ const UserProfile = () => {
       }
 
       const pic = { profileImg: url }
-      // console.log(data);
       const {data} = await axios.post('http://localhost:5000/api/user/' + auth?.user?._id + "/uploadprofilepic",
       pic,
         {
@@ -93,22 +92,22 @@ const UserProfile = () => {
   
       }
   }
-  const fetchTweet = async () => {
+  const fetchTweet = useCallback(async () => {
     try {
       const resp = await axios.get(`http://localhost:5000/api/user/${id}/tweets`);
       setTweets(resp.data);
     } catch (error) {
       console.log(error);
     }
-  }
-  const fetchreTweet = async () => {
+  },[id])
+  const fetchreTweet = useCallback(async () => {
     try {
       const resp = await axios.get(`http://localhost:5000/api/user/${id}/retweets`);
       setreTweets(resp.data);
     } catch (error) {
       console.log(error);
     }
-  }
+  },[id])
   
 
   useEffect(() => {
@@ -116,7 +115,7 @@ const UserProfile = () => {
     fetchData();
     fetchTweet();
     fetchreTweet();
-  }, [auth?.user])
+  }, [auth?.user,fetchData,fetchTweet,fetchreTweet])
   console.log(retweets);
   return (
     <div className="container ">
