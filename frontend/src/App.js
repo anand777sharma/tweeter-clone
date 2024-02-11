@@ -8,9 +8,12 @@ import SignUp from './Pages/SignUp';
 import UserProfile from './Pages/UserProfile';
 import { ToastContainer } from 'react-toastify';
 import OtherProfile from './Pages/OtherProfile';
+import { useAuth } from './context/auth';
+import BackToLoginSpinner from './components/spinner/BackToLoginSpinner';
 
 
 function App() {
+  const [auth, setAuth] = useAuth();
   return (
     <Router>
       <div className="container-fluid">
@@ -28,12 +31,20 @@ function App() {
         />
 
         <Routes>
-          <Route path='/' element={<Login />} />
-          <Route path='/signup' element={<SignUp />} />
-          <Route path='/home' element={<Home />} />
-          <Route path='/myprofile/:id' element={<UserProfile />} />
-          <Route path='/profile/:id' element={<OtherProfile />} />
-          <Route path='/detail/:id' element={<Tweet />} />
+          {auth?.token ? (<>
+            <Route path='/' element={<Login />} />
+            <Route path='/signup' element={<SignUp />} />
+            <Route path='/home' element={<Home />} />
+            <Route path='/myprofile/:id' element={<UserProfile />} />
+            <Route path='/profile/:id' element={<OtherProfile />} />
+            <Route path='/detail/:id' element={<Tweet />} />
+
+          </>) : (<>
+            <Route path='/' element={<Login />} />
+            <Route path='/signup' element={<SignUp />} />
+            <Route path='*' element={<BackToLoginSpinner />} />
+          </>)}
+
         </Routes>
 
       </div>
