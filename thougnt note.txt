@@ -85,3 +85,8 @@ Throughout the development of this project, I encountered several challenges ari
 from the absence of doubt-solving sessions and lack of discussions regarding the 
 Twitter clone project. Consequently, I may have misunderstood certain project requirements.
 I sincerely apologize for any errors or misinterpretations that may have occurred as a result.
+
+===========================================================================
+some issues with the projects picture upload functionality working fine on local machine but 
+not working with backend api url. it is because of the free deplyment service i have used which is render 
+as it take 3 to 4 second to fetch data from backend which leads to error. 

@@ -344,12 +344,16 @@ const TweetList = () => {
 
       {loading ? (
         <>
-        <div className='text-center'>
-        <div class="spinner-border " role="status">
-            <span class="visually-hidden">Loading...</span>
+          <div className='text-center'>
+            <div class="spinner-border " role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <p>
+              It will take some time to fetch data from backend. <br />
+              I am using free service for my backend deployment
+            </p>
           </div>
-        </div>
-         
+
         </>
 
       ) : (<>
