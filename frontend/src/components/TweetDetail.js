@@ -42,7 +42,7 @@ const TweetDetail = () => {
     let formData = new FormData();
     formData.append('file', image.data);
 
-    const response = await axios.post(`http://localhost:5000/api/file/uploadFile`, formData)
+    const response = await axios.post(`https://twitter-clone-h3u6.onrender.com/api/file/uploadFile`, formData)
     return response;
   }
   const viewprofile = (id) => {
@@ -56,7 +56,7 @@ const TweetDetail = () => {
   const followuser = async (id) => {
     try {
       const { data } = await axios.put(
-        `http://localhost:5000/api/user/${id}/follow`,
+        `https://twitter-clone-h3u6.onrender.com/api/user/${id}/follow`,
         {},
         {
           headers: { Authorization: `Bearer ${auth?.token}` }
@@ -83,7 +83,7 @@ const TweetDetail = () => {
   const unfollowuser = async (id) => {
     try {
       const { data } = await axios.put(
-        `http://localhost:5000/api/user/${id}/unfollow`,
+        `https://twitter-clone-h3u6.onrender.com/api/user/${id}/unfollow`,
         {},
         {
           headers: { Authorization: `Bearer ${auth?.token}` }
@@ -110,7 +110,7 @@ const TweetDetail = () => {
   const deletetweet = async (id) => {
     try {
       const { data } = await axios.delete(
-        'http://localhost:5000/api/tweet/' + id,
+        'https://twitter-clone-h3u6.onrender.com/api/tweet/' + id,
         // {},
         {
           headers: { Authorization: `Bearer ${auth?.token}` }
@@ -131,7 +131,7 @@ const TweetDetail = () => {
   const like = async (id) => {
     try {
       const { data } = await axios.put(
-        `http://localhost:5000/api/tweet/${id}/like`,
+        `https://twitter-clone-h3u6.onrender.com/api/tweet/${id}/like`,
         {},
         {
           headers: { Authorization: `Bearer ${auth?.token}` }
@@ -154,7 +154,7 @@ const TweetDetail = () => {
   const unlike = async (id) => {
     try {
       const { data } = await axios.put(
-        `http://localhost:5000/api/tweet/${id}/dislike`,
+        `https://twitter-clone-h3u6.onrender.com/api/tweet/${id}/dislike`,
         {},
         {
           headers: { Authorization: `Bearer ${auth?.token}` }
@@ -175,7 +175,7 @@ const TweetDetail = () => {
   }
   const fetchData = useCallback (async() => {
     try {
-      const resp = await axios.get('http://localhost:5000/api/tweet/' + id);
+      const resp = await axios.get('https://twitter-clone-h3u6.onrender.com/api/tweet/' + id);
       const tdata = resp.data;
       setTweet(tdata);
 
@@ -188,13 +188,13 @@ const TweetDetail = () => {
     try {
      if (image.data !== '') {
         const imgRes = await handleImgUpload();
-        url = "http://localhost:5000/api/file/files/" + imgRes.data.fileName
+        url = "https://twitter-clone-h3u6.onrender.com/api/file/files/" + imgRes.data.fileName
 
 
       }
       const data = { content: tweetr.content, picture: url }
       console.log(data);
-      const resp = await axios.post(`http://localhost:5000/api/tweet/${info?._id}/reply`, data, {
+      const resp = await axios.post(`https://twitter-clone-h3u6.onrender.com/api/tweet/${info?._id}/reply`, data, {
         headers: { Authorization: `Bearer ${auth?.token}` }
       })
       console.log(resp);

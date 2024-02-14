@@ -17,6 +17,7 @@ const UserProfile = () => {
   const [user, setUser] = useState({ profileImg: '' })
   const [auth, setAuth] = useAuth();
   const [profile, setProfile] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [tweets, setTweets] = useState([]);
   const [retweets, setreTweets] = useState([]);
   const [profileimage, setProfileImage] = useState({ preview: '', data: '' })
@@ -37,36 +38,62 @@ console.log(user);
     setProfileImage(img);
 
   };
-  const fetchData = useCallback(async () => {
-    try {
-      const resp = await axios.get('http://localhost:5000/api/user/' + id);
-      const Pdata = resp.data;
-      setProfile(Pdata);
 
+  const fetchTweet = useCallback(async () => {
+    try {
+      const resp = await axios.get(`https://twitter-clone-h3u6.onrender.com/api/user/${id}/tweets`);
+      setTweets(resp.data);
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   },[id])
+  const fetchreTweet = useCallback(async () => {
+    try {
+      const resp = await axios.get(`https://twitter-clone-h3u6.onrender.com/api/user/${id}/retweets`);
+      setreTweets(resp.data);
+    } catch (error) {
+      // console.log(error);
+    }
+  },[id])
+  
+
+  const fetchData = useCallback(async () => {
+    try {
+      const resp = await axios.get('https://twitter-clone-h3u6.onrender.com/api/user/' + id);
+      const Pdata = resp.data;
+      setProfile(Pdata);
+      fetchTweet();
+      fetchreTweet();
+
+    } catch (error) {
+      // console.log(error);
+    }
+  },[id,fetchTweet,fetchreTweet])
   const handleImgUpload = async () => {
+    setLoading(true);
     let formData = new FormData();
     formData.append('file', profileimage.data);
 
-    const response = await axios.post(`http://localhost:5000/api/file/uploadFile`, formData)
+    const response = await axios.post(`https://twitter-clone-h3u6.onrender.com/api/file/uploadFile`, formData)
+    console.log(response);
     return response;
   }
   const submitprofile = async (e) => {
-    // setLoading(true);
+ 
     e.preventDefault();
     try {
       if (profileimage.data !== '') {
         const imgRes = await handleImgUpload();
-        url = "http://localhost:5000/api/file/files/" + imgRes.data.fileName
-        //"http://localhost:5000/api/file/files/file-1705648616517-0.8677161598305487.png"
+        while (loading) {
+          await new Promise(resolve => setTimeout(resolve, 1000)); // Check every 1 second
+        }
+        url = "https://twitter-clone-h3u6.onrender.com/api/file/files/" + imgRes.data.fileName
+        //"https://twitter-clone-h3u6.onrender.com/api/file/files/file-1705648616517-0.8677161598305487.png"
 
       }
 
       const pic = { profileImg: url }
-      const {data} = await axios.post('http://localhost:5000/api/user/' + auth?.user?._id + "/uploadprofilepic",
+      const {data} = await axios.post('https://twitter-clone-h3u6.onrender.com/api/user/' + auth?.user?._id + "/uploadprofilepic",
       pic,
         {
           headers: { Authorization: `Bearer ${auth?.token}` }
@@ -92,30 +119,13 @@ console.log(user);
   
       }
   }
-  const fetchTweet = useCallback(async () => {
-    try {
-      const resp = await axios.get(`http://localhost:5000/api/user/${id}/tweets`);
-      setTweets(resp.data);
-    } catch (error) {
-      console.log(error);
-    }
-  },[id])
-  const fetchreTweet = useCallback(async () => {
-    try {
-      const resp = await axios.get(`http://localhost:5000/api/user/${id}/retweets`);
-      setreTweets(resp.data);
-    } catch (error) {
-      console.log(error);
-    }
-  },[id])
-  
+
 
   useEffect(() => {
     setUser({ profileImg:auth?.user?.profileImg })
     fetchData();
-    fetchTweet();
-    fetchreTweet();
-  }, [auth?.user,fetchData,fetchTweet,fetchreTweet])
+ 
+  }, [auth?.user,fetchData])
   console.log(retweets);
   return (
     <div className="container ">

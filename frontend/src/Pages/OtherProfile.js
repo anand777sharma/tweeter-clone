@@ -26,7 +26,7 @@ const OtherProfile = () => {
   }
   const fetchData = useCallback(async () => {
     try {
-      const resp = await axios.get('http://localhost:5000/api/user/' + id);
+      const resp = await axios.get('https://twitter-clone-h3u6.onrender.com/api/user/' + id);
       const Pdata = resp.data;
       setProfile(Pdata);
 
@@ -36,7 +36,7 @@ const OtherProfile = () => {
   },[id])
   const fetchTweet = useCallback(async () => {
     try {
-      const resp = await axios.get(`http://localhost:5000/api/user/${id}/tweets`);
+      const resp = await axios.get(`https://twitter-clone-h3u6.onrender.com/api/user/${id}/tweets`);
       setTweets(resp.data);
     } catch (error) {
       console.log(error);
@@ -50,7 +50,7 @@ const OtherProfile = () => {
   const followuser = async (id) => {
     try {
       const { data } = await axios.put(
-        `http://localhost:5000/api/user/${id}/follow`,
+        `https://twitter-clone-h3u6.onrender.com/api/user/${id}/follow`,
         {},
         {
           headers: { Authorization: `Bearer ${auth?.token}` }
@@ -78,7 +78,7 @@ const OtherProfile = () => {
   const unfollowuser = async (id) => {
     try {
       const { data } = await axios.put(
-        `http://localhost:5000/api/user/${id}/unfollow`,
+        `https://twitter-clone-h3u6.onrender.com/api/user/${id}/unfollow`,
         {},
         {
           headers: { Authorization: `Bearer ${auth?.token}` }

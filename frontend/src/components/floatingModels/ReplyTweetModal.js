@@ -47,7 +47,7 @@ const ReplyTweetModal = () => {
         let formData = new FormData();
         formData.append('file', image.data);
 
-        const response = await axios.post(`http://localhost:5000/api/file/uploadFile`, formData);
+        const response = await axios.post(`https://twitter-clone-h3u6.onrender.com/api/file/uploadFile`, formData);
         return response;
     };
 
@@ -70,7 +70,7 @@ const ReplyTweetModal = () => {
             if (image.data !== '') {
                 // If an image is selected, upload it to the server
                 const imgRes = await handleImgUpload();
-                url = "http://localhost:5000/api/file/files/" + imgRes.data.fileName; // Construct image URL
+                url = "https://twitter-clone-h3u6.onrender.com/api/file/files/" + imgRes.data.fileName; // Construct image URL
             }
 
             // Prepare data object to send in POST request
@@ -78,7 +78,7 @@ const ReplyTweetModal = () => {
             console.log(data);
 
             // Send POST request to reply to the tweet
-            const resp = await axios.post(`http://localhost:5000/api/tweet/${item?._id}/reply`, data, {
+            const resp = await axios.post(`https://twitter-clone-h3u6.onrender.com/api/tweet/${item?._id}/reply`, data, {
                 headers: { Authorization: `Bearer ${auth?.token}` } // Include authorization token in request headers
             });
 

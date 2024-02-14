@@ -1,19 +1,21 @@
 import React, { useState } from 'react'
 import { Button, Card, Col, Container, Form, Row } from "react-bootstrap"
-import { Link,useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import axios from "axios";
 const SignUp = () => {
-    const navigate=useNavigate()
+    const navigate = useNavigate()
+    const [loading, setLoading] = useState(false);
     const [user, setUser] = useState({ name: '', email: '', username: '', password: '' });
     const submitHandler = async (e) => {
-        // console.log(user);
+        setLoading(true);
         e.preventDefault();
         try {
-            const resp = await axios.post('http://localhost:5000/api/auth/register', user);
+            const resp = await axios.post('https://twitter-clone-h3u6.onrender.com/api/auth/register', user);
             console.log(resp);
             if (resp.status === 201) {
                 // console.log(resp.data.message);
+                setLoading(false);
                 toast.success(resp.data.message);
                 setUser({ name: '', email: '', username: '', password: '' });
                 navigate("/")
@@ -75,7 +77,9 @@ const SignUp = () => {
                                 <div className="d-grid gap-2 shadow">
 
                                     <Button className='btn btn-lg btn-secondary shadow' type='submit'>
-                                        SignUp
+                                        {loading ? (<div class="spinner-border" role="status">
+                                            <span class="visually-hidden">Loading...</span>
+                                        </div>) : (' SignUp')}
                                     </Button>
                                 </div>
                             </Form>
@@ -92,14 +96,14 @@ const SignUp = () => {
                             <p className='text-center'>
                                 Already have Account?
                             </p>
-                        
-                                <div className="d-grid gap-2 shadow">
 
-                                    <Link className='btn btn-lg btn-secondary shadow' to="/">
-                                        Login
-                                    </Link>
-                                </div>
-                       
+                            <div className="d-grid gap-2 shadow">
+
+                                <Link className='btn btn-lg btn-secondary shadow' to="/">
+                                    Login
+                                </Link>
+                            </div>
+
                         </>
                     </Col>
                 </Row>

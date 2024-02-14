@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import "../allStyle/tweetDetail.css";
 import axios from 'axios';
 import Profile from "./Profile"
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useAuth } from '../context/auth';
@@ -15,6 +15,7 @@ const TweetList = () => {
   const [tweet, setTweet] = useState({ content: '', picture: '' });
   const [image, setImage] = useState({ preview: '', data: '' })
   const [item, setItem] = useState(null)
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate()
   const replytweetModal = document.getElementById('replytweetModal')
   if (replytweetModal) {
@@ -36,7 +37,7 @@ const TweetList = () => {
   const followuser = async (id) => {
     try {
       const { data } = await axios.put(
-        `http://localhost:5000/api/user/${id}/follow`,
+        `https://twitter-clone-h3u6.onrender.com/api/user/${id}/follow`,
         {},
         {
           headers: { Authorization: `Bearer ${auth?.token}` }
@@ -63,7 +64,7 @@ const TweetList = () => {
   const unfollowuser = async (id) => {
     try {
       const { data } = await axios.put(
-        `http://localhost:5000/api/user/${id}/unfollow`,
+        `https://twitter-clone-h3u6.onrender.com/api/user/${id}/unfollow`,
         {},
         {
           headers: { Authorization: `Bearer ${auth?.token}` }
@@ -90,7 +91,7 @@ const TweetList = () => {
   const deletetweet = async (id) => {
     try {
       const { data } = await axios.delete(
-        'http://localhost:5000/api/tweet/' + id,
+        'https://twitter-clone-h3u6.onrender.com/api/tweet/' + id,
         // {},
         {
           headers: { Authorization: `Bearer ${auth?.token}` }
@@ -111,7 +112,7 @@ const TweetList = () => {
   const like = async (id) => {
     try {
       const { data } = await axios.put(
-        `http://localhost:5000/api/tweet/${id}/like`,
+        `https://twitter-clone-h3u6.onrender.com/api/tweet/${id}/like`,
         {},
         {
           headers: { Authorization: `Bearer ${auth?.token}` }
@@ -135,7 +136,7 @@ const TweetList = () => {
   const unlike = async (id) => {
     try {
       const { data } = await axios.put(
-        `http://localhost:5000/api/tweet/${id}/dislike`,
+        `https://twitter-clone-h3u6.onrender.com/api/tweet/${id}/dislike`,
         {},
         {
           headers: { Authorization: `Bearer ${auth?.token}` }
@@ -158,7 +159,7 @@ const TweetList = () => {
   const retweet = async (id) => {
     try {
       const { data } = await axios.put(
-        `http://localhost:5000/api/tweet/${id}/retweet`,
+        `https://twitter-clone-h3u6.onrender.com/api/tweet/${id}/retweet`,
         {},
         {
           headers: { Authorization: `Bearer ${auth?.token}` }
@@ -197,30 +198,32 @@ const TweetList = () => {
     let formData = new FormData();
     formData.append('file', image.data);
 
-    const response = await axios.post(`http://localhost:5000/api/file/uploadFile`, formData)
+    const response = await axios.post(`https://twitter-clone-h3u6.onrender.com/api/file/uploadFile`, formData)
     return response;
   }
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
+    setLoading(true);
     try {
-      const resp = await axios.get('http://localhost:5000/api/tweet/');
+      const resp = await axios.get('https://twitter-clone-h3u6.onrender.com/api/tweet/');
       setTweets(resp.data);
+      setLoading(false);
     } catch (error) {
       console.log(error);
     }
-  }
+  }, [])
   const submitHandler = async (e) => {
     e.preventDefault();
     try {
       if (image.data !== '') {
         const imgRes = await handleImgUpload();
-        url = "http://localhost:5000/api/file/files/" + imgRes.data.fileName
+        url = "https://twitter-clone-h3u6.onrender.com/api/file/files/" + imgRes.data.fileName
 
 
       }
       const data = { content: tweet.content, picture: url }
       console.log(data);
-      const resp = await axios.post(`http://localhost:5000/api/tweet/${item?._id}/reply`, data, {
+      const resp = await axios.post(`https://twitter-clone-h3u6.onrender.com/api/tweet/${item?._id}/reply`, data, {
         headers: { Authorization: `Bearer ${auth?.token}` }
       })
       console.log(resp);
@@ -240,8 +243,8 @@ const TweetList = () => {
 
   useEffect(() => {
     fetchData();
-  }, [])
-  console.log(tweets);
+  }, [fetchData])
+  // console.log(tweets);
   return (
     <div >
       {/* reply tweet modal */}
@@ -338,129 +341,144 @@ const TweetList = () => {
       </div>
 
       {/* Mapping Tweets */}
-      {tweets.map((item) => (
-        <div key={item._id} >
-          <div className="border border-2 border-bottom-1 ps-3 pe-2 py-2 d-flex">
-            <Profile source={item?.tweetedby?.profileImg} size="40px" alt="pic" />
-            <div className='ps-2 w-100 '>
-              <div className='d-flex align-items-center w-100'>
-                <div className='ps-0'>
-                  <button className='border-0 btn btn-lignt btn-lg p-0 fs-6' onClick={() => viewprofile(item?.tweetedby?._id)} >
-                    <span className='fw-bold '>{item?.tweetedby?.name} <i className="fas fa-check-circle fa-md text-primary"></i></span>
-                    &nbsp; @{item?.tweetedby?.username}
-                  </button>
 
-                  <span className="ps-2" style={{ fontSize: "12px" }}>
-                    - {item?.createdAt}
-                  </span>
-                  {/* Replying To Section */}
-                  {item?.replyingto === null ? (<p>replying to @{item?.replyingto}</p>) : ('')}
+      {loading ? (
+        <>
+        <div className='text-center'>
+        <div class="spinner-border " role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>
+         
+        </>
+
+      ) : (<>
+        {tweets.map((item) => (
+          <div key={item._id} >
+            <div className="border border-2 border-bottom-1 ps-3 pe-2 py-2 d-flex">
+              <Profile source={item?.tweetedby?.profileImg} size="40px" alt="pic" />
+              <div className='ps-2 w-100 '>
+                <div className='d-flex align-items-center w-100'>
+                  <div className='ps-0'>
+                    <button className='border-0 btn btn-lignt btn-lg p-0 fs-6' onClick={() => viewprofile(item?.tweetedby?._id)} >
+                      <span className='fw-bold '>{item?.tweetedby?.name} <i className="fas fa-check-circle fa-md text-primary"></i></span>
+                      &nbsp; @{item?.tweetedby?.username}
+                    </button>
+
+                    <span className="ps-2" style={{ fontSize: "12px" }}>
+                      - {item?.createdAt}
+                    </span>
+                    {/* Replying To Section */}
+                    {item?.replyingto === null ? (<p>replying to @{item?.replyingto}</p>) : ('')}
+                  </div>
+
+                  <div className="ms-auto fs-4 text-muted ">
+                    {/* Actions Dropdown */}
+                    {auth?.user?._id === item?.tweetedby?._id ?
+                      (<button
+                        className="dropdown-item btn btn-light p-2 rounded-4"
+                        onClick={() => deletetweet(item?._id)}
+                      >
+                        <i className="far fa-trash-alt fa-md"></i>
+                      </button>)
+                      :
+                      (<>
+                        {
+                          auth?.user?.following?.some(i => i === item?.tweetedby?._id) ? (
+                            <button
+                              className="dropdown-item btn btn-light p-2 rounded-4"
+                              onClick={() => unfollowuser(item?.tweetedby?._id)}
+                            >
+                              <i className="fas fa-regular fa-user-minus fa-md"></i>
+                            </button>
+                          ) : (
+                            <button
+                              className="dropdown-item btn btn-light p-2 rounded-4"
+                              onClick={() => followuser(item?.tweetedby?._id)}
+                            >
+                              <i className="fas fa-regular fa-user-plus fa-md"></i>
+                            </button>
+                          )
+                        }
+                      </>
+                      )
+                    }
+
+                  </div>
                 </div>
 
-                <div className="ms-auto fs-4 text-muted ">
-                  {/* Actions Dropdown */}
-                  {auth?.user?._id === item?.tweetedby?._id ?
-                    (<button
-                      className="dropdown-item btn btn-light p-2 rounded-4"
-                      onClick={() => deletetweet(item?._id)}
-                    >
-                      <i className="far fa-trash-alt fa-md"></i>
-                    </button>)
-                    :
-                    (<>
+                <div className=" border-0 " onClick={() => viewtweet(item?._id)}>
+                  <p style={{ fontSize: "14px" }}>
+                    {/* Tweet Content */}
+                    {item?.content}
+                  </p>
+                  {/* Tweet Image */}
+                  {item?.picture === '' ?
+                    ('') :
+                    (
+                      <>
+                        <div className=''>
+                          <img src={item?.picture}
+                            className=" rounded-4 border border-2" alt="pic" style={{ maxHeight: 400, maxWidth: 450 }} />
+                        </div>
+                      </>
+                    )}
+                </div>
+
+                {/* Tweet Actions */}
+                <div className="d-flex  px-3 pt-2">
+                  <div className='pe-5'>
+                    {/* Like Button */}
+                    <>
                       {
-                        auth?.user?.following?.some(i => i === item?.tweetedby?._id) ? (
+                        item?.likes?.some(i => i === auth?.user?._id) ? (
                           <button
-                            className="dropdown-item btn btn-light p-2 rounded-4"
-                            onClick={() => unfollowuser(item?.tweetedby?._id)}
+                            className="btn btn-light text-danger px-2 py-1 rounded-circle "
+                            onClick={() => unlike(item?._id)}
                           >
-                            <i className="fas fa-regular fa-user-minus fa-md"></i>
+                            <i className="fas fa-heart fa-md"></i>
                           </button>
                         ) : (
                           <button
-                            className="dropdown-item btn btn-light p-2 rounded-4"
-                            onClick={() => followuser(item?.tweetedby?._id)}
+                            className="btn btn-light px-2 py-1 rounded-circle"
+                            onClick={() => like(item?._id)}
                           >
-                            <i className="fas fa-regular fa-user-plus fa-md"></i>
+                            <i className="far fa-heart fa-md"></i>
                           </button>
                         )
-                      }
+                      }  {item?.likes?.length}
                     </>
-                    )
-                  }
-
-                </div>
-              </div>
-
-              <div className=" border-0 " onClick={() => viewtweet(item?._id)}>
-                <p style={{ fontSize: "14px" }}>
-                  {/* Tweet Content */}
-                  {item?.content}
-                </p>
-                {/* Tweet Image */}
-                {item?.picture === '' ?
-                  ('') :
-                  (
-                    <>
-                      <div className=''>
-                        <img src={item?.picture}
-                          className=" rounded-4 border border-2" alt="pic" style={{ maxHeight: 400, maxWidth: 450 }} />
-                      </div>
-                    </>
-                  )}
-              </div>
-
-              {/* Tweet Actions */}
-              <div className="d-flex  px-3 pt-2">
-                <div className='pe-5'>
-                  {/* Like Button */}
-                  <>
-                    {
-                      item?.likes?.some(i => i === auth?.user?._id) ? (
-                        <button
-                          className="btn btn-light text-danger px-2 py-1 rounded-circle "
-                          onClick={() => unlike(item?._id)}
-                        >
-                          <i className="fas fa-heart fa-md"></i>
-                        </button>
-                      ) : (
-                        <button
-                          className="btn btn-light px-2 py-1 rounded-circle"
-                          onClick={() => like(item?._id)}
-                        >
-                          <i className="far fa-heart fa-md"></i>
-                        </button>
-                      )
-                    }  {item?.likes?.length}
-                  </>
-                </div>
-                <div className='text-primary pe-5'>
-                  {/* Reply Button */}
-                  <button
-                    className="btn btn-light text-primary px-2 py-1 rounded-circle "
-                    type="button" data-bs-toggle="modal"
-                    info={JSON.stringify(item)}
-                    data-bs-target="#replytweetModal"
-                  >
-                    <i className="far fa-comment fa-md"></i>
-                  </button>
-                  {item?.replies?.length}
-                </div>
-                <div className='text-success pe-5'>
-                  {/* Retweet Button */}
-                  <button
-                    className="btn btn-light text-success px-2 py-1 rounded-circle "
-                    onClick={() => retweet(item?._id)}
-                  >
-                    <i className="fas fa-retweet fa-md"></i>
-                  </button>
-                  {item?.retweetedby?.length}
+                  </div>
+                  <div className='text-primary pe-5'>
+                    {/* Reply Button */}
+                    <button
+                      className="btn btn-light text-primary px-2 py-1 rounded-circle "
+                      type="button" data-bs-toggle="modal"
+                      info={JSON.stringify(item)}
+                      data-bs-target="#replytweetModal"
+                    >
+                      <i className="far fa-comment fa-md"></i>
+                    </button>
+                    {item?.replies?.length}
+                  </div>
+                  <div className='text-success pe-5'>
+                    {/* Retweet Button */}
+                    <button
+                      className="btn btn-light text-success px-2 py-1 rounded-circle "
+                      onClick={() => retweet(item?._id)}
+                    >
+                      <i className="fas fa-retweet fa-md"></i>
+                    </button>
+                    {item?.retweetedby?.length}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </>)}
+
+
     </div>
 
   )

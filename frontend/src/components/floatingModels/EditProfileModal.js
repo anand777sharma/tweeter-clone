@@ -27,7 +27,7 @@ const EditProfileModal = () => {
 
         try {
             // Send PUT request to update user data
-            const { data } = await axios.put('http://localhost:5000/api/user/' + auth?.user?._id, user, {
+            const { data } = await axios.put('https://twitter-clone-h3u6.onrender.com/api/user/' + auth?.user?._id, user, {
                 headers: { Authorization: `Bearer ${auth?.token}` } // Include authorization token in request headers
             });
 

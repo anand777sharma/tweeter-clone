@@ -15,7 +15,7 @@ const TweetCard = (props) => {
   const followuser = async (id) => {
     try {
       const { data } = await axios.put(
-        `http://localhost:5000/api/user/${id}/follow`,
+        `https://twitter-clone-h3u6.onrender.com/api/user/${id}/follow`,
         {},
         {
           headers: { Authorization: `Bearer ${auth?.token}` }
@@ -42,7 +42,7 @@ const TweetCard = (props) => {
   const unfollowuser = async (id) => {
     try {
       const { data } = await axios.put(
-        `http://localhost:5000/api/user/${id}/unfollow`,
+        `https://twitter-clone-h3u6.onrender.com/api/user/${id}/unfollow`,
         {},
         {
           headers: { Authorization: `Bearer ${auth?.token}` }
@@ -69,7 +69,7 @@ const TweetCard = (props) => {
   const deletetweet = async (id) => {
     try {
       const { data } = await axios.delete(
-        'http://localhost:5000/api/tweet/' + id,
+        'https://twitter-clone-h3u6.onrender.com/api/tweet/' + id,
         // {},
         {
           headers: { Authorization: `Bearer ${auth?.token}` }
@@ -90,7 +90,7 @@ const TweetCard = (props) => {
   const like = async (id) => {
     try {
       const { data } = await axios.put(
-        `http://localhost:5000/api/tweet/${id}/like`,
+        `https://twitter-clone-h3u6.onrender.com/api/tweet/${id}/like`,
         {},
         {
           headers: { Authorization: `Bearer ${auth?.token}` }
@@ -114,7 +114,7 @@ const TweetCard = (props) => {
   const unlike = async (id) => {
     try {
       const { data } = await axios.put(
-        `http://localhost:5000/api/tweet/${id}/dislike`,
+        `https://twitter-clone-h3u6.onrender.com/api/tweet/${id}/dislike`,
         {},
         {
           headers: { Authorization: `Bearer ${auth?.token}` }

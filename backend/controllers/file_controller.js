@@ -1,7 +1,7 @@
 
 // controller to send file to the frontend as response
 const sendfilename = (req, res) => {
-    res.json({ "fileName": req.file.filename });
+    res.status(200).json({ "fileName": req.file.filename });
 }
 // controller to down load file
 const downloadFile = (req, res) => {

@@ -11,13 +11,15 @@ const Login = () => {
 
     const [user, setUser] = useState({ email: '', password: '' });
     const [auth, setAuth] = useAuth();
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
    
     const submitHandler = async (e) => {
+        setLoading(true);
         e.preventDefault();
 
         try {
-            const resp = await axios.post('http://localhost:5000/api/auth/login', user);
+            const resp = await axios.post('https://twitter-clone-h3u6.onrender.com/api/auth/login', user);
             if (resp.status === 200) {
 
                 setAuth({
@@ -25,7 +27,7 @@ const Login = () => {
                     user: resp.data.user,
                     token: resp.data.token
                 })
-                console.log(resp.data);
+                setLoading(false);
                 toast.success(resp.data.message);
                 localStorage.setItem('auth', JSON.stringify(resp.data));
                 navigate('/home');
@@ -77,7 +79,9 @@ const Login = () => {
                             {/* Button to submit the login form */}
                             <div className="d-grid gap-2 shadow">
                                 <Button className='btn btn-lg btn-secondary shadow' type='submit'>
-                                    Login
+                                {loading ? (<div class="spinner-border" role="status">
+                                            <span class="visually-hidden">Loading...</span>
+                                        </div>) : ('Login')}
                                 </Button>
                             </div>
                         </Form>
