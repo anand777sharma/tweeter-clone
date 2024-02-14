@@ -89,4 +89,6 @@ I sincerely apologize for any errors or misinterpretations that may have occurre
 ===========================================================================
 some issues with the projects picture upload functionality working fine on local machine but 
 not working with backend api url. it is because of the free deplyment service i have used which is render 
-as it take 3 to 4 second to fetch data from backend which leads to error. 
+as it take 3 to 4 second to fetch data from backend which leads to error.
+
+and on refreshing it is showing page not found 
